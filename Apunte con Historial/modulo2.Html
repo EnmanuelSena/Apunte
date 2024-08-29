@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Apuntes</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <button id="backButton" onclick="irAlModulo1()">Volver al Apunte Digital</button>
+        <h1>Historial de Apuntes</h1>
+        
+        <label for="search">Buscar por Nombre:</label>
+        <input type="text" id="search" oninput="filtrarHistorial()" placeholder="Buscar por nombre exacto">
+
+        <div id="apuntesHistorial"></div>
+    </div>
+    <script>
+        function irAlModulo1() {
+            window.location.href = "apunte.html";
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const historialDiv = document.getElementById('apuntesHistorial');
+
+            function mostrarHistorial(apuntesFiltrados) {
+                historialDiv.innerHTML = ''; // Limpia el historial existente
+                if (apuntesFiltrados.length === 0) {
+                    historialDiv.innerHTML = '<p>No se encontraron apuntes.</p>';
+                    return;
+                }
+
+                apuntesFiltrados.forEach((apunte, index) => {
+                    const apunteItem = document.createElement('div');
+                    apunteItem.classList.add('apunte-item');
+                    
+                    apunteItem.innerHTML = `
+                        <p><strong>${index + 1}. Nombre:</strong> ${apunte.nombre}</p>
+                        <p><strong>Opción:</strong> ${apunte.opcion}</p>
+                        <p><strong>Fecha:</strong> ${apunte.fecha}</p>
+                        <p><strong>Hora:</strong> ${apunte.hora}</p>
+                        <p><strong>Precio:</strong> ${apunte.precio}</p>
+                        <button onclick="eliminarApunte(${index})">Eliminar</button>
+                    `;
+                    historialDiv.appendChild(apunteItem);
+                });
+            }
+
+            function filtrarHistorial() {
+                const searchValue = document.getElementById('search').value.toLowerCase().trim();
+                const apuntes = JSON.parse(localStorage.getItem('apuntes')) || [];
+                const apuntesFiltrados = apuntes.filter(apunte => 
+                    apunte.nombre.toLowerCase() === searchValue
+                );
+                mostrarHistorial(apuntesFiltrados);
+            }
+
+            window.eliminarApunte = function(index) {
+                let apuntes = JSON.parse(localStorage.getItem('apuntes')) || [];
+                apuntes.splice(index, 1); // Elimina el apunte en la posición especificada
+                localStorage.setItem('apuntes', JSON.stringify(apuntes));
+                // Actualiza la visualización del historial
+                filtrarHistorial();
+            };
+
+            // Mostrar todos los apuntes al cargar la página
+            mostrarHistorial(JSON.parse(localStorage.getItem('apuntes')) || []);
+        });
+    </script>
+</body>
+</html>

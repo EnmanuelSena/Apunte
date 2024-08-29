@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apunte Digital</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Apunte Digital</h1>
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" required>
+
+        <label for="opcion">Opción:</label>
+        <select id="opcion">
+            <option value="Corte">Corte</option>
+            <option value="Afeitada">Afeitada</option>
+            <option value="Cerquillo">Cerquillo</option>
+        </select>
+
+        <button onclick="guardarApunte()">Guardar</button>
+        <button onclick="irAlHistorial()">Ver Historial</button>
+    </div>
+
+    <script>
+        function guardarApunte() {
+            const nombre = document.getElementById('nombre').value;
+            const opcion = document.getElementById('opcion').value;
+            const fecha = new Date().toLocaleDateString();
+            const hora = new Date().toLocaleTimeString();
+
+            let precio;
+            switch(opcion) {
+                case "Corte":
+                    precio = 300;
+                    break;
+                case "Afeitada":
+                    precio = 100;
+                    break;
+                case "Cerquillo":
+                    precio = 150;
+                    break;
+            }
+
+            const apunte = { nombre, opcion, hora, fecha, precio };
+
+            let apuntes = JSON.parse(localStorage.getItem('apuntes')) || [];
+            apuntes.push(apunte);
+            localStorage.setItem('apuntes', JSON.stringify(apuntes));
+
+            alert('Apunte guardado correctamente!');
+            document.getElementById('nombre').value = '';
+        }
+
+        function irAlHistorial() {
+            window.location.href = "modulo2.html";
+        }
+    </script>
+</body>
+</html>
